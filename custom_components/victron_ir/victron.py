@@ -5,7 +5,7 @@ import logging
 from bluetooth_sensor_state_data import BluetoothData
 from home_assistant_bluetooth import BluetoothServiceInfo
 from sensor_state_data import Units, DeviceClass
-from victron_ble.devices import detect_device_type, DcEnergyMeter
+from victron_ble.devices import detect_device_type, DcEnergyMeter, SmartChargerData
 from victron_ble.devices.base import MODEL_ID_MAPPING
 from victron_ble.devices import (
     AuxMode,
@@ -69,6 +69,8 @@ class VictronInstantReadoutData(BluetoothData):
             self.send_solar_charger_data(sensor_data)
         elif isinstance(sensor_data, DcDcConverterData):
             self.send_dcdc_converter_data(sensor_data)
+        elif isinstance(sensor_data, SmartChargerData):
+            self.send_smart_charger_data(sensor_data)
         else:
             LOGGER.debug("Unknown device", device)
 
@@ -195,4 +197,25 @@ class VictronInstantReadoutData(BluetoothData):
             device_class=DeviceClass.CURRENT,
             native_unit_of_measurement=Units.ELECTRIC_CURRENT_AMPERE,
             native_value=sensor_data.get_external_device_load(),
+        )
+
+    def send_smart_charger_data(self, sensor_data: SmartChargerData):
+        LOGGER.debug(f"sending smart charger data; state: {sensor_data.get_charge_state()}")
+        self.update_sensor(
+            key=CHARGE_STATE,
+            device_class=CHARGE_STATE,
+            native_unit_of_measurement=None,
+            native_value=sensor_data.get_charge_state(),
+        )
+        self.update_sensor(
+            key="battery_voltage",
+            device_class=DeviceClass.VOLTAGE,
+            native_unit_of_measurement=Units.ELECTRIC_POTENTIAL_VOLT,
+            native_value=sensor_data.get_battery_voltage(),
+        )
+        self.update_sensor(
+            key="battery_charging_current",
+            device_class=DeviceClass.CURRENT,
+            native_unit_of_measurement=Units.ELECTRIC_CURRENT_AMPERE,
+            native_value=sensor_data.get_battery_charging_current(),
         )
