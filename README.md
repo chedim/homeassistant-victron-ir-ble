@@ -12,8 +12,19 @@ This integration is based on [victron-ble](https://github.com/keshavdv/victron-b
     - Solar Power (W)
     - Yield Today (Wh)
     - External Device Load (A)
-- SmartShunt 500A/500mv and BMV-712/702 (TODO)
+- SmartShunt 500A/500mv
+    - Alarm
+    - Battery Current
+    - Battery Power
+    - Battery Voltage
+    - State Of Charge
+    - Time Remaining
+- BMV-712/702 (TODO)
 - Smart Battery Sense (TODO)
+- Smart Charger (tested with IP 65 12|15):
+    - Charging State
+    - Battery Voltage
+    - Battery Current
 
 ## Quick Setup
 
