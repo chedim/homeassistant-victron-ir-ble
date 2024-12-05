@@ -58,7 +58,7 @@ class VictronInstantReadoutData(BluetoothData):
 
         try:
             sensor_data = device.parse(raw_data)
-        except ValueError as error:
+        except Exception as error:
             LOGGER.debug(f"{model_name} failed to parse: {error}")
             LOGGER.debug(f"raw decrypted data: {device.decrypt(raw_data)}")
             return
