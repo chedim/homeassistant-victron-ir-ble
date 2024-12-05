@@ -5,7 +5,7 @@ import logging
 from bluetooth_sensor_state_data import BluetoothData
 from home_assistant_bluetooth import BluetoothServiceInfo
 from sensor_state_data import Units, DeviceClass
-from victron_ble.devices import detect_device_type
+from victron_ble.devices import detect_device_type, DcEnergyMeter
 from victron_ble.devices.base import MODEL_ID_MAPPING
 from victron_ble.devices import (
     AuxMode,
@@ -38,8 +38,8 @@ class VictronInstantReadoutData(BluetoothData):
         # detect device type
         device_type = detect_device_type(raw_data)
         if device_type is None:
-            LOGGER.debug(f"Unknown device type: {raw_data}")
-            return
+            LOGGER.debug(f"Unknown device type: {raw_data}, defaulting to energy meter")
+            device_type = DcEnergyMeter
 
         # get device model name
         device = device_type(self._enckey)
